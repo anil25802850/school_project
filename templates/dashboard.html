@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teacher Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f0f4f7; font-family: 'Segoe UI', sans-serif; }
+    .tab-content { margin-top: 20px; }
+    .nav-link.active { font-weight: bold; background-color: #0d6efd; color: rgb(133, 13, 13) !important; }
+    .card { border-radius: 15px; }
+    .hover-img { transition: transform 0.3s; }
+    .hover-img:hover { transform: scale(1.05); }
+    .btn { transition: background-color 0.3s; }
+    .btn:hover { background-color: #0056b3; }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-4">
+  <a class="navbar-brand" href="#">School Dashboard</a>
+</nav>
+
+<!-- Tabs -->
+<div class="container mt-4">
+  <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#addStudent">➕ Add Student</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#modifyStudent">🛠 Modify Students</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#marks">📘 Marks</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#results">📊 Results</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#report">📄 Progress Report</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#issues">🚨 Issues</a></li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+
+
+
+    <!-- Add Student -->
+    <div class="tab-pane fade show active" id="addStudent">
+      <div class="card p-4 mt-3">
+        <h5 class="mb-3">➕ Add Student</h5>
+        <form method="post" action="{{url_for('addstudent')}}">
+          <input name="name" class="form-control mb-2" placeholder="Student Name" required>
+          <input name="parent" class="form-control mb-2" placeholder="Parent Name" required>
+          <!-- <input name="roll" class="form-control mb-2" placeholder="Roll Number" required> -->
+          <select name="class">
+            {% for class in classes %}
+            <option value="{{class}}">{{class}}</option>
+            {% endfor %}
+          </select>
+          <input name="phone" class="form-control mb-2" placeholder="Phone" required>
+          <input name="email" class="form-control mb-2" placeholder="Email" type="email">
+          <textarea name="address" class="form-control mb-2" placeholder="Address"></textarea>
+          <button type="submit" class="btn btn-success">Add Student</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modify Students -->
+    <div class="tab-pane fade" id="modifyStudent">
+      <div class="card p-4 mt-3">
+        <h5>🛠 Modify Students by Class</h5>
+        <form method="post" action="/fetchstudents/">
+          <select name="class" class="form-select w-25 mb-3">
+            <option selected>Select Class</option>
+            {% for class in classes %}
+            <option value="{{class}}">{{class}}</option>
+            {% endfor %}
+          </select>
+          <button class="btn btn-primary">Fetch Students</button>
+        </form>
+        <table class="table mt-3 table-bordered table-striped">
+          <thead><tr><th>Name</th><th>Class</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr>
+              <!-- <td>John Doe</td>
+              <td>Class 1</td> -->
+              <td>
+                <form action="#" method="POST" class="d-inline">
+                  <input type="hidden" name="id" value="1">
+                  <button class="btn btn-sm btn-info">Update</button>
+                </form>
+                <form action="#" method="POST" class="d-inline">
+                  <input type="hidden" name="id" value="1">
+                  <button class="btn btn-sm btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr>
+              <!-- <td>Jane Smith</td>
+              <td>Class 2</td> -->
+              <td>
+                <form action="#" method="POST" class="d-inline">
+                  <input type="hidden" name="id" value="2">
+                  <button class="btn btn-sm btn-info">Update</button>
+                </form>
+                <form action="#" method="POST" class="d-inline">
+                  <input type="hidden" name="id" value="2">
+                  <button class="btn btn-sm btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Marks -->
+    <div class="tab-pane fade" id="marks">
+      <div class="card p-4 mt-3">
+        <h5>📘 Add/Edit Marks</h5>
+        <form method="POST" action="#">
+          <select name="class" class="form-select w-25 mb-3">
+            <option selected>Select Class</option>
+            <option value="Class 1">Class 1</option>
+            <option value="Class 2">Class 2</option>
+            <option value="Class 3">Class 3</option>
+            <option value="Class 4">Class 4</option>
+            <option value="Class 5">Class 5</option>
+            <option value="Class 6">Class 6</option>
+            <option value="Class 7">Class 7</option>
+            <option value="Class 8">Class 8</option>
+            <option value="Class 9">Class 9</option>
+            <option value="Class 10">Class 10</option> 
+          </select>
+          <button class="btn btn-secondary">Load Students</button>
+        </form>
+        <h6>Students:</h6>
+        <div class="border p-2 mb-3 rounded bg-light">
+          <strong>#</strong>
+          <form method="POST" action="#">
+            <label>Math</label>
+            <input type="number" name="marks_math" class="form-control mb-2" required>
+            <label>Science</label>
+            <input type="number" name="marks_science" class="form-control mb-2" required>
+            <input type="hidden" name="student_id" value="1">
+            <button class="btn btn-primary">#</button>
+          </form>
+        </div>
+        <div class="border p-2 mb-3 rounded bg-light">
+          <strong>Jane Smith</strong>
+          <form method="POST" action="#">
+            <label>Math</label>
+            <input type="number" name="marks_math" class="form-control mb-2" required>
+            <label>Science</label>
+            <input type="number" name="marks_science" class="form-control mb-2" required>
+            <input type="hidden" name="student_id" value="2">
+            <button class="btn btn-primary">Submit Marks</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="tab-pane fade" id="results">
+      <div class="card p-4 mt-3">
+        <h5>📊 Results by Class</h5>
+        <form method="POST" action="#">
+          <select name="class" class="form-select w-25 mb-3">
+            <option>Select Class</option>
+            <option value="Class 1">Class 1</option>
+            <option value="Class 2">Class 2</option>
+            <option value="Class 3">Class 3</option>
+            <option value="Class 4">Class 4</option>
+            <option value="Class 5">Class 5</option>
+            <option value="Class 6">Class 6</option>
+            <option value="Class 7">Class 7</option>
+            <option value="Class 8">Class 8</option>
+            <option value="Class 9">Class 9</option>
+            <option value="Class 10">Class 10</option> 
+          </select>
+          <button class="btn btn-primary">View Results</button>
+        </form>
+        <table class="table table-bordered mt-3">
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Total</th><th>Rank</th><th>Grade</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <!-- <tr>
+              <td>1</td>
+              <td>John Doe</td>
+              <td>180</td>
+              <td>1</td>
+              <td>A</td>
+              <td>Pass</td>
+            </tr> -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Progress Report -->
+    <div class="tab-pane fade" id="report">
+      <div class="card p-4 mt-3">
+        <h5>📄 Generate Progress Report</h5>
+        <form method="POST" action="#">
+          <select name="class" class="form-select w-25 mb-3">
+            <option>Select Class</option>
+            <option value="Class 1">Class 1</option>
+            <option value="Class 2">Class 2</option>
+            <option value="Class 3">Class 3</option>
+            <option value="Class 4">Class 4</option>
+            <option value="Class 5">Class 5</option>
+            <option value="Class 6">Class 6</option>
+            <option value="Class 7">Class 7</option>
+            <option value="Class 8">Class 8</option>
+            <option value="Class 9">Class 9</option>
+            <option value="Class 10">Class 10</option> 
+
+          </select>
+          <select name="student_id" class="form-select w-25 mb-3">
+            <option>Select Student</option>
+            <option value="1"></option>
+            <option value="2"></option>
+          </select>
+          <button class="btn btn-danger">Generate PDF</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Issues -->
+    <div class="tab-pane fade" id="issues">
+      <div class="card p-4 mt-3">
+        <h5>🚨 Reported Issues</h5>
+        <table class="table table-bordered">
+          <thead><tr><th>Issue</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Sample issue description 1</td>
+              <td>
+                <form method="POST" action="#">
+                  <input type="hidden" name="id" value="1">
+                  <button class="btn btn-sm btn-success">Resolve</button>
+                </form>
+              </td>
+            </tr>
+            <tr>
+              <td>Sample issue description 2</td>
+              <td>
+                <form method="POST" action="#">
+                  <input type="hidden" name="id" value="2">
+                  <button class="btn btn-sm btn-success">Resolve</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
