@@ -1,0 +1,24 @@
+
+    {% extends 'dashboard.html' %}
+    {% block content %}
+    <div class="tab-pane fade show active" id="addStudent">
+        <div class="card p-4 mt-3">
+          <h5 class="mb-3">➕ Add Student</h5>
+          <form method="post">
+            <input name="name" class="form-control mb-2" placeholder="Student Name" required>
+            <input name="parent" class="form-control mb-2" placeholder="Parent Name" required>
+            <!-- <input name="roll" class="form-control mb-2" placeholder="Roll Number" required> -->
+            <select name="class">
+
+              {% for class in classes %}
+              <option value="{{class}}">{{class}}</option>\
+                {% endfor %}
+            </select>
+            <input name="phone" class="form-control mb-2" placeholder="Phone" maxlength="10" required>
+            <input name="email" class="form-control mb-2" placeholder="Email" type="email">
+            <textarea name="address" class="form-control mb-2" placeholder="Address"></textarea>
+            <button type="submit" class="btn btn-success">Add Student</button>
+          </form>
+        </div>
+      </div>
+    {% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+<form method="post">
+    <select name="class" id="class_id" class="form-select w-25 mb-3">
+        <option selected>Select Class</option>
+        {% if session['classes'] %}
+        {% for class in session['classes'] %}
+        <option value="{{class}}">{{class}}</option>
+        {% endfor %}
+        {% endif %}
+    </select>
+    <input type="text" name="subject" class="form-control mb-3" placeholder="Subject Name" required>
+    <button type="submit" class="btn btn-primary">Add Subject</button>
+</form>
+
+{% if session['subjects'] %}
+<h2>Subjects List</h2>
+<table class="table mt-3 table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Subject ID</th>
+            <th>Class</th>
+            <th>Subject Name</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for subject in session['subjects'] %}
+        <tr>
+            <td>{{subject[2]}}</td>
+            <td>{{subject[1]}}</td>
+            <td>{{subject[0]}}</td>
+            <td><button><a href="{{url_for('deletesubject',subject_id=subject[2])}}">Delete</a></button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    {% endif %}
+{% endblock %}

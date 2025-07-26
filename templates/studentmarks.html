@@ -1,0 +1,47 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+
+<h3>Add Marks for student {{ details[0] }} {{ details[1] }}</h3>
+
+<form id="formid">
+  {% for class in session['class_subjects'] %}
+    <label>Enter Marks for Subject {{ class[2] }}</label><br>
+    <input type="number" name="{{ class[0] }}" placeholder="{{ class[2] }}" required><br>
+  {% endfor %}
+  <button type="submit">Submit</button>
+</form>
+
+<p>Total Marks: {{totalmarks }}</p>
+
+
+<script>
+document.getElementById("formid").addEventListener("submit", function(event) {
+    event.preventDefault(); // prevent default form submission
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const jsonData = {};
+
+    for (const [key, value] of formData.entries()) {
+        jsonData[key] = value;
+    }
+
+    fetch(window.location.pathname, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(jsonData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.redirect) {
+            window.location.href = data.redirect;  // 👈 Redirect on success
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+</script>
+
+
+{% endblock %}

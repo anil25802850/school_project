@@ -1,0 +1,46 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+<div class="container">
+    <h2>Faculty Dashboard</h2>
+    <p>Welcome, {{ session['teacher'] }}!</p>
+    <p>Here you can manage your classes and students.</p>
+
+    <form method="post">
+        <select name="subject" id="subject_id" class="form-select w-25 mb-3">
+            <option selected>Select subject</option>
+            {% if session['subjects'] %}
+            {% for subject in session['subjects'] %}
+            <option value="{{subject}}">{{subject}}</option>
+            {% endfor %}
+            {% endif %}
+        </select>
+        <select name="teacher" class="form-select mb-3">
+            <option selected>Select Teacher</option>
+            {% for teacher in session['teachers'] %}
+            <option value="{{teacher[2]}}">{{teacher[0]}} -- {{teacher[1]}}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Assign Teacher</button>
+    </form>
+    {% if session['subteachers'] %}
+    <!-- <table class="table mt-3 table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Subject Name</th>
+                <th>Teacher Name</th>
+                <th>Delete</th>
+            </tr>
+        </thead> -->
+        <tbody>
+            {% for subject in session['subteachers'] %}
+            <tr>
+                <td>{{subject[0]}}</td>
+                <td>{{subject[1]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        {% endif %}
+
+        {% endblock %}
+       {% if session['subteachers'] %}
+        {% endif %}

@@ -1,0 +1,42 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+    <form method="post">
+        <select name="class">
+            {% for class in session['classes'] %}
+            <option value="{{class}}">{{class}}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Fetch Students</button>
+    </form>
+    {% if session['studentnames'] %}
+    {% if marks!={} %}
+    <table>
+        <thead>
+            <th>S.No</th>
+            <th>Name</th>
+            <th>Action</th>
+            <th>Total</th>
+            <th>Rank</th>
+
+        </thead>
+        <tbody>
+            {% for item in session['studentnames'] %}
+            <tr>
+                <td>{{session['studentnames'].index(item)+1}}</td>
+                <td>{{item[1]}}</td>
+                <td>{{marks[item[0]][0]}}</td>
+                {% if marks[item[0]][0] == 0 %}
+                <td><a href="{{url_for('studentmarks',id=item[0])}}"><button>Add marks</button></a></td>
+                {% endif %}
+                {% if marks[item[0]][0] != 0 %}
+                <td><a href="{{url_for('updatemarks',id=item[0])}}"><button>Update marks</button></a></td>
+                {% endif %}
+                <td>{{marks[item[0]][1]}}</td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    {% endif %}
+{% endblock %}

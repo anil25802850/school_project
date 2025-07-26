@@ -1,0 +1,18 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+<div>
+    <form method="post">
+        <input placeholder="Student_Name" value="{{student[1]}}" name="name" class="form-control mb-2">
+        <input placeholder="Parent_Name" value="{{student[2]}}" name="parent" class="form-control mb-2">
+        <input placeholder="Phone" value="{{student[3]}}" name="phone" class="form-control mb-2">
+        <input placeholder="Email" value="{{student[4]}}" name="email" class="form-control mb-2">
+        <input placeholder="Address" value="{{student[5]}}" name="address" class="form-control mb-2">
+        <select name="class" class="form-select mb-2">
+            {% for class in classes %}
+            <option value="{{class}}">{{class}}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-success">Update Student</button>
+    </form>
+</div>
+{% endblock %}
