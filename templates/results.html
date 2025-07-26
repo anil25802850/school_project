@@ -1,0 +1,29 @@
+{% extends 'dashboard.html' %}
+{% block css %}
+
+
+{% endblock %}
+{% block content %}
+<table>
+    <thead>
+        <th>S.No</th>
+        <th>Subject Name</th>
+        <th>Marks</th>
+        <th>Grade</th>
+        <th>Status</th>
+    </thead>
+    <tbody>
+        {% for result in results %}
+        <tr>
+            <td>{{results.index(result)+1}}</td>
+            <td>{{result[1]}}</td>
+            <td>{{result[2]}}</td>
+            <td>{{result[3]}}</td>
+            <td>{{result[4]}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p>Total Marks : {{total}} </p>
+<a href="{{url_for('resultsdownload')}}"><button>Get Progress Report</button></a>
+{% endblock %}

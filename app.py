@@ -96,14 +96,17 @@ def teacherlogin():
 # Route to handle teacher logout
 @app.route('/dashboard',methods=['GET','POST'])
 def dashboard():
-    cursor=mydb.cursor()
-    cursor.execute('select school_id from teachers where email_id=%s',[session['teacher']])
-    session['school_id']=cursor.fetchone()[0]
-    cursor.execute('select class_number from classes where school_id=%s',[session['school_id']])
-    classes = [row[0] for row in cursor.fetchall()]
-    session['classes'] = classes
-    print('classes=====================',session['classes'])
-    return render_template('dashboard.html',classes=session['classes'])
+    if session.get('student'):
+        return render_template('dashboard.html')
+    elif session.get('teacher'):
+        cursor=mydb.cursor()
+        cursor.execute('select school_id from teachers where email_id=%s',[session['teacher']])
+        session['school_id']=cursor.fetchone()[0]
+        cursor.execute('select class_number from classes where school_id=%s',[session['school_id']])
+        classes = [row[0] for row in cursor.fetchall()]
+        session['classes'] = classes
+        print('classes=====================',session['classes'])
+        return render_template('dashboard.html',classes=session['classes'])
 #=========================================================================
 
 # Route to handle student signup
@@ -169,29 +172,6 @@ def fetchstudents():
         return redirect(url_for('fetchstudents'))
     return render_template('fetchstudents.html')
 #-------------------------------------------------------
-
-@app.route('/studentlogin', methods=['GET', 'POST'])
-def studentlogin():
-    cursor = mydb.cursor()
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        cursor.execute('SELECT count(email_id) FROM student WHERE email_id=%s', [email])
-        count = cursor.fetchone()[0]
-        if count == 0:
-            flash('User does not exist')
-            return redirect(url_for('studentlogin'))
-        else:
-            cursor.execute('SELECT password FROM student WHERE email_id=%s', [email])
-            db_password = cursor.fetchone()[0]
-            if bcrypt.checkpw(password.encode(), db_password):
-                session['student'] = email
-                flash('Login successful', 'success')
-                return redirect(url_for('dashboard'))
-            else:
-                flash('Invalid Password')
-                return redirect(url_for('studentlogin'))
-    return render_template('studentlogin.html') #-------------------------------------------------------
 
 @app.route('/updatestudent/<student_id>', methods=['GET', 'POST'])
 def updatestudent(student_id):
@@ -268,7 +248,7 @@ def faculty():
 @app.route('/subjects',methods=['GET','POST'])
 def subjects():
     cursor=mydb.cursor()
-    cursor.execute('select subject_name,class_number,id from subjects where school_id=%s',[session['school_id']])
+    cursor.execute('select subject_name,class_number,id from subjects where school_id=%s order by class_number' ,[session['school_id']])
     session['subjects']=cursor.fetchall()
     if session.get('subjects'):
         print(session['subjects'])
@@ -327,7 +307,7 @@ def marks():
             marks[item[0]]=tmarks
         # marks=marks
         marks=rankcalculator(marks)
-        print(marks)
+        print('MMMMMMM',marks)
         print(session['studentnames'])
     return render_template('studentnames.html',marks=marks)
 
@@ -385,6 +365,142 @@ def updatemarks(id):
     return render_template('studentmarks.html',details=details,totalmarks=totalmarks)
 
 
+@app.route('/forgotpwd',methods=['GET','POST'])
+def forgotpwd():
+    if request.method=='POST':
+        id=request.form['id']
+        otpform=request.form['otp']
+        password=request.form['password']
+        cpassword=request.form['confirmpassword']
+        # print('session otp in forgotpwd=====================',session['otp'])
+        if otp==otpform and password==cpassword and id[-4]=='S':
+            cursor=mydb.cursor()
+            hashed_pwd=bcrypt.hashpw(password.encode(),salt=bcrypt.gensalt())
+            cursor.execute('update student set password=%s where id=%s',[hashed_pwd,id])
+            mydb.commit()
+            flash(f'Password Updated successfully for ID {id}')
+            return redirect(url_for('studentlogin'))
+        elif otp==otpform and password==cpassword and id[-4]=='T':
+            cursor=mydb.cursor()
+            hashed_pwd=bcrypt.hashpw(password.encode(),salt=bcrypt.gensalt())
+            cursor.execute('update teachers set password=%s where id=%s',[hashed_pwd,id])
+            mydb.commit()
+            flash(f'Password Updated successfully for ID {id}')    
+            return redirect(url_for('teacherlogin'))
+    return render_template('forgotpwd.html')
+
+#==========================Student Routes==============================================
+@app.route('/studentlogin', methods=['GET', 'POST'])
+def studentlogin():
+    cursor = mydb.cursor()
+    if request.method == 'POST':
+        id=request.form['id']
+        password=request.form['password']
+        cursor.execute('select count(id) from student where id=%s',[id])
+        count=cursor.fetchone()[0]
+        if count==1:
+            cursor.execute('select password,defpassword from student where id=%s',[id])
+            db_pass=cursor.fetchone()
+            if bcrypt.checkpw(password.encode(),db_pass[0]) or (password==db_pass[1] and password!=''):
+                cursor.execute('update student set defpassword=%s where id=%s',['',id])
+                mydb.commit()
+                cursor.execute('select school_id from student where id=%s',[id])
+                session['school_id']=cursor.fetchone()[0]
+                session['student']=id
+                flash('Login Successful')
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Incorrect password')
+                return redirect(url_for('studentlogin'))
+        else:
+            flash('No account exists')
+            return redirect(url_for('studentlogin'))
+    return render_template('studentlogin.html') #-------------------------------------------------------
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    cursor=mydb.cursor()
+    cursor.execute('select * from student where id=%s',[session['student']])
+    data=cursor.fetchone()
+    if request.method=='POST':
+        mail=request.form['mail']
+        address=request.form['address']
+        cursor.execute('update student set mail=%s,address=%s where id=%s',[mail,address,session['student']])
+        mydb.commit()
+        flash('Details updated successfully')
+        return redirect(url_for('profile'))        
+    return render_template('profile.html',data=data)
+
+@app.route('/results',methods=['GET','POST'])
+def results():
+    cursor=mydb.cursor()
+    cursor.execute('select marks.student_id,subjects.subject_name,marks,grade,status from marks join subjects on marks.subject_id=subjects.id where student_id=%s',[session['student']])
+    results=cursor.fetchall()
+    cursor.execute('select sum(marks) from marks where student_id=%s',[session['student']])
+    total=cursor.fetchone()[0]
+    return render_template('results.html',results=results,total=total)
+
+
+@app.route('/resultsdownload',methods=['GET','POST'])
+def resultsdownload():
+    cursor=mydb.cursor()
+    cursor.execute('select marks.student_id,subjects.subject_name,marks,grade,status from marks join subjects on marks.subject_id=subjects.id where student_id=%s',[session['student']])
+    results=cursor.fetchall()
+    cursor.execute('select school_name,address,city from school where id=%s',[session['school_id']])
+    school_details=cursor.fetchone()
+    cursor.execute('select * from student where id=%s',[session['student']])
+    student_details=cursor.fetchone()
+    cursor.execute('select sum(marks) from marks where student_id=%s',[session['student']])
+    total=cursor.fetchone()[0]
+    return render_template('resultsdownload.html',results=results,total=total,school_details=school_details,student_details=student_details)
+
+@app.route('/sendmail/<id>',methods=['GET'])
+def sendmail(id):
+    id=id
+    if id[-4]=='S':    
+        cursor=mydb.cursor()
+        cursor.execute('select mail from student where id=%s',[id])
+        email=cursor.fetchone()[0]
+        if email:
+            global otp
+            otp=genotp()
+            session['otp']=otp
+            print('session otp=====================',session['otp'])
+            subject=f'OTP for ID {id}'
+            body=f'OTp for forgotpwd is {otp}'
+            print(body)
+            send_mail(to=email,subject=subject,body=body)
+    elif id[-4]=='T':    
+        cursor=mydb.cursor()
+        cursor.execute('select email_id from teachers where id=%s',[id])
+        email=cursor.fetchone()[0]
+        if email:
+            otp=genotp()
+            session['otp']=otp
+            print('session otp=====================',session['otp'])
+            subject=f'OTP for ID {id}'
+            body=f'OTp for forgotpwd is {otp}'
+            print(body)
+            send_mail(to=email,subject=subject,body=body)
+
+@app.route('/student_dashboard',methods=['GET','POST'])
+def student_dashboard():
+    return render_template('student_dashboard.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @app.route('/sessiondetails', methods=['GET', 'POST'])
 def sessiondetails():
     sessiondetails=session
@@ -397,6 +513,9 @@ def total_marks(student_id):
     print('========================',total_marks_db)
     session['total_marks'] = total_marks_db
     return total_marks_db
+
+
+
 
 def full_id(school_id,person):
     cursor=mydb.cursor()

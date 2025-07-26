@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    {% block css%}
+    {% endblock %}
     <style>
+        
         :root {
             --primary: #4f8cff;
             --primary-dark: #2c5282;
@@ -251,7 +254,10 @@
 
             {% endif %}
             {% if session['student'] %}
+            <li><a href="{{url_for('profile')}}"><button>Update Profile</button></a></li>
+            <li><a href="{{url_for('results')}}"><button>Results</button></a></li>
             <li><a href="{{url_for('logout')}}"><button>Logout</button></a></li>
+            <p>Welcome {{session['student']}}</p>
             {% endif %}
             {% if not session['teacher'] and not session['student'] %}
             <li><a href="{{url_for('studentlogin')}}"><button>Student Login</button></a></li>

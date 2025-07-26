@@ -1,0 +1,19 @@
+{% extends 'dashboard.html' %}
+{% block css %}
+
+
+{% endblock %}
+{% block content %}
+<form method="post">
+<label>Student ID {{data[0]}}</label><br>
+<label>Student Name {{data[1]}}</label><br>
+<label>Parent Name {{data[2]}}</label><br>
+<label>Phone Number {{data[3]}}</label><br>
+<label>Student Email</label><br>
+<input type="text" value="{{data[4]}}" name="mail"><br>
+<label>Address</label><br>
+<input type="text" value="{{data[5]}}" name="address"><br>
+<p>{{data[7]}}</p><br>
+<button type="submit">Update</button>
+</form>
+{% endblock %}

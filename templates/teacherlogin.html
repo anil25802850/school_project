@@ -53,7 +53,15 @@
         }
     </style>
 </head>
-
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class=flashes>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
 <body>
 
     <div class="container d-flex justify-content-center">
@@ -86,7 +94,7 @@
                 </div>
 
                 <div class="mb-3 text-end">
-                    <a class="forgot text-danger" title="Recover via email or OTP" href="#">Forgot Password?</a>
+                    <a class="forgot text-danger" title="Recover via email or OTP" href="{{url_for('forgotpwd')}}">Forgot Password?</a>
                 </div>
 
                 <button type="submit" class="btn btn-login w-100">Login</button>

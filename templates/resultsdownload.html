@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f4f7f9;
+        margin: 30px;
+        color: #333;
+    }
+
+    h1 {
+        color: #2e4a62;
+        margin-bottom: 0;
+    }
+
+    p {
+        font-size: 16px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #2e4a62;
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    footer {
+        margin-top: 50px;
+    }
+
+    .left {
+        text-align: left;
+    }
+
+    .right {
+        text-align: right;
+    }
+
+    strong {
+        font-weight: bold;
+    }
+
+    @media print {
+        body {
+            margin: 0;
+        }
+
+        footer {
+            page-break-after: always;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th {
+            background: #ddd !important;
+            color: black !important;
+        }
+    }
+    .details-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    
+    padding: 5px;
+}
+
+.student-info, .parent-info {
+    width: 48%;
+    background-color: #fdfdfd;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    font-size: 16px;
+}
+
+
+
+    </style>
+</head>
+<body>
+    <strong><center><h1>{{school_details[0]}}</h1></center></strong><br>
+    <center><p>{{school_details[1]}} - {{school_details[2]}}</p></center>
+
+<div class="details-container">
+    <div class="student-info">
+        <p>Name : {{student_details[1]}} <br>
+           Class : {{student_details[7]}} <br>
+           Roll No : {{student_details[0]}}</p>
+    </div>
+    <div class="parent-info">
+        <p>Parent Name : {{student_details[2]}} <br>
+           Mail : {{student_details[3]}} <br>
+           Address : {{student_details[4]}}</p>
+    </div>
+</div>
+
+<table>
+    <thead>
+        <th>S.No</th>
+        <th>Subject Name</th>
+        <th>Marks</th>
+        <th>Grade</th>
+        <th>Status</th>
+    </thead>
+    <tbody>
+        {% for result in results %}
+        <tr>
+            <td>{{results.index(result)+1}}</td>
+            <td>{{result[1]}}</td>
+            <td>{{result[2]}}</td>
+            <td>{{result[3]}}</td>
+            <td class="status">{{result[4]}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<h3>Total Marks : <strong>{{total}}</strong></h3>
+<button onclick="printReport()">Print</button>
+</body>
+<script>
+    window.onload = function() {
+        const statusCells = document.querySelectorAll(".status");
+        statusCells.forEach(cell => {
+            if (cell.innerText.trim().toLowerCase() === "pass") {
+                cell.style.color = "green";
+            } else if (cell.innerText.trim().toLowerCase() === "fail") {
+                cell.style.color = "red";
+            }
+        });
+    };
+    function printReport() {
+        window.print();
+    }
+</script>
+
+<footer>
+    <p style="text-align: right;">Parent Signature</p>
+</footer>
+</html>

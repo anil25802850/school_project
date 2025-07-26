@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="post">
+        <label>Enter Id</label>
+        <input type="text" id='sid'placeholder="Enter Id" name="id">
+        <input type="text" name='otp' hidden id='otp' placeholder=" Enter OTP">
+        <input type="password" placeholder="Enter Password" id='password' hidden name="password">
+        <input type="password" placeholder="Enter Confirm Password" id='cpassword' hidden name="confirmpassword">
+        <button hidden id ='submit' type="submit">Submit</button>
+         </form>
+         <button id="otpbutton" onclick="getotp()">Get OTP</button>
+         <script>
+            // const sid=document.getElementById('sid')
+            function getotp() {
+                const sid=document.getElementById('sid').value
+                const otp=document.getElementById('otp')
+                const sbm=document.getElementById('submit')
+                const pass=document.getElementById('password')
+                const cpass=document.getElementById('cpassword')
+                const get=document.getElementById('otpbutton')
+                fetch(`/sendmail/${sid}`)
+                otp.hidden=false
+                pass.hidden=false
+                sbm.hidden=false
+                cpass.hidden=false
+                get.hidden=true
+
+            }
+         </script>
+</body>
+</html>
