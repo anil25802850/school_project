@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    {% block css%}
-    {% endblock %}
     <style>
         :root {
             --primary: #4f8cff;
@@ -226,92 +224,99 @@
         }
     </style>
 </head>
-{% with messages = get_flashed_messages() %}
-{% if messages %}
+
+
 <ul class=flashes>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
+    
+    <li>Subject deleted successfully</li>
+    
 </ul>
-{% endif %}
-{% endwith %}
+
+
 
 <body>
 
     <nav>
         <ul style="list-style-type: none; padding: 0; display: flex; flex-direction: row; align-items: center;">
-            <li><a class="navbar-brand fw-bold" href="{{url_for('home')}}">🏫 School</a></li>
-            {% if session['teacher'] %}
-            <li><a href="{{url_for('fetchstudents')}}"><button>Fetch Students</button></a></li>
-            <li><a href="{{url_for('addstudent')}}"><button>Add Student</button></a></li>
-            <li><a href="{{url_for('logout')}}"><button>Logout</button></a></li>
-            <li><a href="{{url_for('faculty')}}"><button>Faculty</button></a></li>
-            <li><a href="{{url_for('subjects')}}"><button>subjects</button></a></li>
-            <li><a href="{{url_for('marks')}}"><button>marks</button></a></li>
-            <li><a href="{{url_for('sessiondetails')}}"><button>sessiondetails</button></a></li>
-            <p>Welcome {{session['teacher'] , session['teacher_id']}}</p>
+            <li><a class="navbar-brand fw-bold" href="/">🏫 School</a></li>
+            
+            <li><a href="/fetchstudents"><button>Fetch Students</button></a></li>
+            <li><a href="/addstudent"><button>Add Student</button></a></li>
+            <li><a href="/logout"><button>Logout</button></a></li>
+            <li><a href="/faculty"><button>Faculty</button></a></li>
+            <li><a href="/subjects"><button>subjects</button></a></li>
+            <p>Welcome dinesh.rcnd3@gmail.com</p>
 
-            {% endif %}
-            {% if session['student'] %}
-            <li><a href="{{url_for('profile')}}"><button>Update Profile</button></a></li>
-            <li><a href="{{url_for('results')}}"><button>Results</button></a></li>
-            <li><a href="{{url_for('logout')}}"><button>Logout</button></a></li>
-            <p>Welcome {{session['student']}}</p>
-            {% endif %}
-            {% if not session['teacher'] and not session['student'] %}
-            <li><a href="{{url_for('studentlogin')}}"><button>Student Login</button></a></li>
-            <li><a href="{{url_for('teacherlogin')}}"><button>Teacher Login</button></a></li>
-            <li><a href="{{url_for('teachersignup')}}"><button>Teacher Signup</button></a></li>
-            <li><a href="{{url_for('admin')}}"><button>Admin Login</button></a></li>
-            {% endif %}
+            
+            
+            
         </ul>
     </nav>
-    {% block content %}
-    <div class="container">
-        <center>
-            <h2>Welcome to the Dashboard</h2>
-        </center>
-    </div>
+    
+<form method="post">
+    <select name="class" id="class_id" class="form-select w-25 mb-3">
+        <option selected>Select Class</option>
+        
+        
+        <option value="Class-6">Class-6</option>
+        
+        <option value="Class-7">Class-7</option>
+        
+        <option value="Class-8">Class-8</option>
+        
+        <option value="Class-9">Class-9</option>
+        
+        <option value="Class-10">Class-10</option>
+        
+        
+    </select>
+    <input type="text" name="subject" class="form-control mb-3" placeholder="Subject Name" required>
+    <button type="submit" class="btn btn-primary">Add Subject</button>
+</form>
 
 
-    <header class="hero text-white d-flex align-items-center text-center">
+<h2>Subjects List</h2>
+<table class="table mt-3 table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Subject ID</th>
+            <th>Class</th>
+            <th>Subject Name</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        <tr>
+            <td>28</td>
+            <td>Class-9</td>
+            <td>Physical Science</td>
+            <td><button><a href="/deletesubject/28">Delete</a></button></td>
+        </tr>
+        
+        <tr>
+            <td>35</td>
+            <td>Class-10</td>
+            <td>Physical Science</td>
+            <td><button><a href="/deletesubject/35">Delete</a></button></td>
+        </tr>
+        
+        <tr>
+            <td>37</td>
+            <td>Class-6</td>
+            <td>Telugu</td>
+            <td><button><a href="/deletesubject/37">Delete</a></button></td>
+        </tr>
+        
+    </tbody>
+    
+
+    <!-- Footer -->
+    <!-- <footer class="main-footer">
         <div class="container">
-            <h1 class="display-4 fw-bold">Welcome to SCHOOL</h1>
-            <p class="lead">Empowering schools, teachers, and students with seamless digital access and information.</p>
+            &copy; 2025 EduConnect. All rights reserved.
         </div>
-    </header>
-    </div>
-    <section class="content-section">
-        <div class="container text-center">
-            <h2 class="mb-4">Explore Our Campuses</h2>
-            <div class="card-container">
-                <div class="card">
-                    <img src="/static/360_F_374849081_sou5wJtrl5bcYbmo5YMS10bWPcYc5Kln.jpg" class="card__image"
-                        alt="Modern campus building with glass architecture">
-                </div>
-                <div class="card">
-                    <img src="/static/istockphoto-94732796-612x612.jpg" class="card__image"
-                        alt="Students studying in campus library">
-                </div>
-                <div class="card">
-                    <img src="/static/Overseas-A_1080a-700x480.jpg" class="card__image"
-                        alt="Campus aerial view with green spaces">
-                </div>
-            </div>
-            <center>
-                <p class="mt-4 text-muted">📍 Serving 10,000+ Students & Teachers</p>
-            </center>
-
-        </div>
-    </section>
-    <footer>
-        <div class="container text-center mt-4">
-            <center>
-                <p>&copy; 2023 School Management System</p>
-            </center>
-        </div>
-    </footer>
-    {% endblock %}
+    </footer> -->
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -324,5 +329,12 @@
     </script>
 
 </body>
+<footer>
+    <div class="container text-center mt-4">
+        <center>
+            <p>&copy; 2023 School Management System</p>
+        </center>
+    </div>
+</footer>
 
 </html>

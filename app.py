@@ -7,7 +7,6 @@ from flask_session import Session
 from cmail import send_mail
 from otp import genotp
 
-
 app=Flask(__name__)
 app.config['SESSION_TYPE']='filesystem'
 app.secret_key='schoolprj'
@@ -110,24 +109,32 @@ def dashboard():
 #=========================================================================
 
 # Route to handle student signup
-@app.route('/addstudent',methods=['GET','POST'])
+from werkzeug.security import generate_password_hash
+
+@app.route('/addstudent', methods=['GET', 'POST'])
 def addstudent():
-    if request.method=='POST':
-        name=request.form['name']
-        parent=request.form['parent']
-        class_id=request.form['class']
-        phone=request.form['phone']
-        email=request.form['email']
-        address=request.form['address']
-        cursor=mydb.cursor()
-        id=full_id(school_id=session['school_id'],person='student')
-        print(id)
-        cursor.execute('insert into student values(%s,%s,%s,%s,%s,%s,%s,%s)',[id,name,parent,phone,email,address,int(session['school_id']),class_id])
+    if request.method == 'POST':
+        name = request.form['name']
+        parent = request.form['parent']
+        class_id = request.form['class']
+        phone = request.form['phone']
+        email = request.form['email']
+        address = request.form['address']
+        student_id = full_id(school_id=session['school_id'], person='student')
+        #default password
+        default_password = '12345678'
+        hashed_password = generate_password_hash(default_password)  # Optional
+        cursor = mydb.cursor()
+        cursor.execute(
+            '''INSERT INTO student (id, name, parent_name, phone, mail, address, school_id, class_number, password, defpassword)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',[student_id, name, parent, phone, email, address, int(session['school_id']), class_id, hashed_password.encode(), default_password])
         mydb.commit()
         flash(f'Student {name} added successfully')
         return redirect(url_for('addstudent'))
-    return render_template('addstudent.html',classes=session['classes'])
-#=========================================================================    
+
+    return render_template('addstudent.html', classes=session['classes'])
+
+#=========================================================================   @   ===================================================================
     
         
     

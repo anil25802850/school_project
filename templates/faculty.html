@@ -1,3 +1,60 @@
+<style>
+    .container {
+        background: #f8f9fa;
+        padding: 2rem 2.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-top: 2rem;
+    }
+
+    h2 {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-select,
+    .btn {
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background: #007bff;
+        border: none;
+        transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+    .table {
+        margin-top: 1.5rem;
+        border-collapse: collapse;
+    }
+    .table th, .table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f2f2f2;
+    }
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    .table-bordered th, .table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+    .table-bordered th {
+        background-color: #e9ecef;
+    }
+    .table-bordered td {
+        background-color: #ffffff;
+    }
+</style>
 {% extends 'dashboard.html' %}
 {% block content %}
 <div class="container">
@@ -23,14 +80,14 @@
         <button type="submit" class="btn btn-primary">Assign Teacher</button>
     </form>
     {% if session['subteachers'] %}
-    <!-- <table class="table mt-3 table-bordered table-striped">
+    <table class="table mt-3 table-bordered table-striped">
         <thead>
             <tr>
                 <th>Subject Name</th>
                 <th>Teacher Name</th>
-                <th>Delete</th>
+                <!-- <th>Delete</th> -->
             </tr>
-        </thead> -->
+        </thead>
         <tbody>
             {% for subject in session['subteachers'] %}
             <tr>
@@ -42,5 +99,5 @@
         {% endif %}
 
         {% endblock %}
-       {% if session['subteachers'] %}
+        {% if session['subteachers'] %}
         {% endif %}
